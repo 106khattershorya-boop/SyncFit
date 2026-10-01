@@ -1,0 +1,12 @@
+[project]
+name = "gym-slot-booking-api"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]",
+    "pymongo",
+    "pydantic-settings",
+    "python-dotenv",
+    "pwdlib[argon2]",
+    "pyjwt",
+]
