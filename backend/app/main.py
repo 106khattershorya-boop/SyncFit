@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
+from app.core.errors import register_error_handlers
 from app.db.mongo import lifespan
 
 
@@ -11,6 +12,8 @@ app = FastAPI(
     title="Gym Slot Booking API",
     lifespan=lifespan,
 )
+
+register_error_handlers(app)
 
 app.add_middleware(
     CORSMiddleware,
