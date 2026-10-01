@@ -12,7 +12,7 @@ from app.db.indexes import create_indexes
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
-    client = AsyncMongoClient(settings.mongodb_uri)
+    client = AsyncMongoClient(settings.mongodb_uri, tz_aware=True)
     database = client[settings.mongodb_database]
 
     app.state.mongo_client = client
