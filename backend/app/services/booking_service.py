@@ -98,7 +98,7 @@ async def list_member_bookings(
     member_id: ObjectId,
     database: AsyncDatabase,
 ) -> list[BookingResponse]:
-    cursor = database.bookings.aggregate(
+    cursor = await database.bookings.aggregate(
         [
             {"$match": {"member_id": member_id}},
             {"$sort": {"booked_at": -1}},
