@@ -5,7 +5,7 @@ from pymongo.asynchronous.database import AsyncDatabase
 
 from app.api.dependencies import require_admin
 from app.db.mongo import get_database
-from app.schemas.session import SessionCreateRequest, SessionResponse
+from app.schemas.session import ActivityType, SessionCreateRequest, SessionResponse
 from app.services.session_service import create_session, list_sessions
 
 
@@ -28,5 +28,6 @@ async def create(
 @router.get("", response_model=list[SessionResponse])
 async def list_upcoming(
     database: AsyncDatabase = Depends(get_database),
+    activity_type: ActivityType | None = None,
 ) -> list[SessionResponse]:
-    return await list_sessions(database)
+    return await list_sessions(database, activity_type)

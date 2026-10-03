@@ -1,12 +1,12 @@
 # SyncFit
 
-A gym session booking app. Members can create accounts, browse upcoming sessions, book or cancel sessions, and join or leave waitlists. Admins can create sessions and check members in.
+A gym session booking app. Members can register, browse upcoming activities, book or cancel sessions, and join or leave waitlists. Admins can create sessions and check members in.
 
 ## Tech stack
 
 - Backend: Python, FastAPI, PyMongo
 - Database: MongoDB
-- Frontend: React (planned)
+- Frontend: React
 
 ## Project structure
 
@@ -15,7 +15,7 @@ A gym session booking app. Members can create accounts, browse upcoming sessions
       app/
       .env.example
       pyproject.toml
-    frontend/ (planned)
+    frontend/
 
 ## Backend setup
 
@@ -62,6 +62,7 @@ The API creates its MongoDB indexes when it starts.
 | POST | `/api/auth/register` | Register |
 | POST | `/api/auth/login` | Login |
 | GET | `/api/sessions` | List upcoming sessions |
+| GET | `/api/sessions?activity_type=zumba` | Filter sessions by activity |
 | POST | `/api/sessions` | Create a session (admin) |
 | POST | `/api/bookings` | Book a session |
 | GET | `/api/bookings/me` | List my bookings |
@@ -73,17 +74,38 @@ The API creates its MongoDB indexes when it starts.
 
 Protected routes require a bearer token from the login response. In Postman, select **Authorization → Bearer Token** and paste the token.
 
+## Activities and prices
+
+Prices are per one-hour session. Each session has 20 slots.
+
+| Activity | Price |
+|---|---:|
+| Strength & Conditioning | ₹300 |
+| HIIT | ₹250 |
+| Zumba | ₹250 |
+| Aerobics | ₹200 |
+| Yoga | ₹250 |
+| Pilates | ₹350 |
+| Swimming | ₹400 |
+| Sauna | ₹300 |
+
+## Mock payment
+
+The frontend will demonstrate a mock checkout flow. It does not connect to a payment processor, charge money, or store card details.
+
 ## Frontend
 
-The React frontend has not been started yet. Frontend setup and run instructions will be added when it is created.
+The React frontend is planned. Setup and run instructions will be added when it is created.
 
 ## Assumptions
 
 - New accounts have the `member` role. For this challenge, admin access is assigned manually to a user in MongoDB.
 - Passwords are stored as hashes, not plain text.
 - Session dates and times are stored as timezone-aware datetimes.
+- Sessions start on the hour; the listed activity prices and 20-slot capacity apply to each one-hour session.
 - When a booking is cancelled, the earliest waiting member is promoted if a waitlist entry exists.
 - Only admins can create sessions and check members in.
 - Check-in is allowed only during the session’s check-in window.
 - Related booking and session updates use MongoDB transactions; the MongoDB deployment must support transactions.
+- The mock checkout is for demonstration only; payment is handled at the gym.
 - API behavior is checked manually with Postman, and database records can be inspected with MongoDB Compass. No seed script is included.
