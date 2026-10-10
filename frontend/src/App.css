@@ -140,6 +140,7 @@ header {
   margin-bottom: 10px;
 }
 
+.section-heading h1,
 .section-heading h2,
 .booking-note h2 {
   margin: 0;
@@ -300,6 +301,7 @@ header {
   .booking-note {
     padding: 32px 24px;
   }
+ }
 
   .activity-filter {
   display: flex;
@@ -380,4 +382,434 @@ header {
     padding: 20px;
   }
 }
+
+.auth-page {
+  display: grid;
+  grid-template-columns: 1fr 0.9fr;
+  align-items: center;
+  gap: 64px;
+  max-width: 1200px;
+  min-height: 650px;
+  padding: 36px 48px 72px;
+}
+
+.auth-image-panel {
+  position: relative;
+  min-height: 540px;
+  overflow: hidden;
+  border-radius: 48% 48% 20px 20px;
+  background: #d9dfd1;
+}
+
+.auth-image-panel img {
+  width: 100%;
+  height: 540px;
+  object-fit: cover;
+}
+
+.auth-image-caption {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+  margin: 0;
+  padding: 18px 22px;
+  border-radius: 16px;
+  background: rgb(23 60 49 / 88%);
+  color: #fbf9f3;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  justify-self: center;
+}
+
+.auth-card h1 {
+  margin: 0;
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  line-height: 1.05;
+}
+
+.auth-intro {
+  margin: 18px 0 30px;
+  color: #667168;
+  line-height: 1.7;
+}
+
+.auth-form {
+  display: grid;
+  gap: 10px;
+}
+
+.auth-form label {
+  margin-top: 8px;
+  color: #34483d;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.auth-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d8d5c9;
+  border-radius: 12px;
+  outline: none;
+  background: #fbf9f3;
+  color: #1d2923;
+}
+
+.auth-form input:focus {
+  border-color: #557c67;
+  box-shadow: 0 0 0 3px rgb(85 124 103 / 14%);
+}
+
+.auth-form button {
+  width: 100%;
+  margin-top: 14px;
+  border: 0;
+  cursor: pointer;
+}
+
+.auth-form button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.form-error {
+  margin: 8px 0 0;
+  color: #a13f36;
+  font-size: 0.9rem;
+}
+
+.auth-switch {
+  margin-top: 22px;
+  color: #667168;
+  font-size: 0.92rem;
+}
+
+.auth-switch a {
+  color: #174a39;
+  font-weight: 700;
+}
+
+@media (max-width: 800px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 24px 28px 56px;
+  }
+
+  .auth-image-panel {
+    min-height: 320px;
+    border-radius: 28px;
+  }
+
+  .auth-image-panel img {
+    height: 320px;
+  }
+
+  .auth-card {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-page {
+    padding: 16px 20px 48px;
+  }
+
+  .auth-image-panel,
+  .auth-image-panel img {
+    min-height: 250px;
+    height: 250px;
+  }
+}
+.session-card {
+  overflow: hidden;
+  padding: 14px;
+}
+
+.session-image {
+  flex: 0 0 150px;
+  width: 150px;
+  height: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.session-info {
+  flex: 1;
+}
+
+.session-card .button,
+.checkout-modal .button {
+  border: 0;
+  cursor: pointer;
+}
+
+.session-card .button:disabled,
+.checkout-modal .button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.checkout-overlay {
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(16 31 25 / 55%);
+}
+
+.checkout-modal {
+  width: min(100%, 480px);
+  padding: 36px;
+  border: 1px solid #e5e0d4;
+  border-radius: 24px;
+  background: #f6f3eb;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 20%);
+}
+
+.checkout-modal h2 {
+  margin: 0 0 16px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.checkout-modal > p {
+  color: #667168;
+  line-height: 1.6;
+}
+
+.checkout-modal .eyebrow {
+  color: #63756a;
+}
+
+.checkout-modal .checkout-price {
+  margin: 24px 0 8px;
+  color: #173c31;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+}
+
+.checkout-modal .button {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.checkout-cancel {
+  display: block;
+  margin: 16px auto 0;
+  border: 0;
+  background: transparent;
+  color: #47534b;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .session-card {
+    align-items: stretch;
+  }
+
+  .session-image {
+    flex-basis: auto;
+    width: 100%;
+    height: 180px;
+  }
+
+  .checkout-modal {
+    padding: 28px 22px;
+  }
+}
+
+.booking-list {
+  display: grid;
+  max-width: 850px;
+  gap: 14px;
+}
+
+.booking-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 24px;
+  border: 1px solid #e5e0d4;
+  border-radius: 18px;
+  background: #fbf9f3;
+}
+
+.booking-card h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.booking-status {
+  display: inline-block;
+  margin: 12px 0 0;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #e8e8df;
+  color: #59635b;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+}
+
+.status-confirmed {
+  background: #e1eee3;
+  color: #28563e;
+}
+
+.booking-card .button-outline {
+  border: 1px solid #9aaa9e;
+  background: transparent;
+  color: #173c31;
+  cursor: pointer;
+}
+
+.booking-card .button-outline:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.booking-empty {
+  max-width: 700px;
+  padding: 32px;
+  border: 1px solid #e5e0d4;
+  border-radius: 20px;
+  background: #fbf9f3;
+}
+
+.booking-empty h2 {
+  margin-top: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.booking-empty p {
+  margin-bottom: 24px;
+  color: #667168;
+}
+
+@media (max-width: 600px) {
+  .booking-card {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 20px;
+  }
+}
+
+.admin-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 48px;
+  margin: 24px 0 64px;
+}
+
+.admin-intro h1 {
+  margin: 0;
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  line-height: 1.02;
+}
+
+.admin-intro p:not(.eyebrow) {
+  max-width: 420px;
+  color: #667168;
+  line-height: 1.7;
+}
+
+.admin-intro img {
+  width: 100%;
+  height: 300px;
+  border-radius: 24px;
+  object-fit: cover;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.admin-card {
+  padding: 28px;
+  border: 1px solid #e5e0d4;
+  border-radius: 20px;
+  background: #fbf9f3;
+}
+
+.admin-card h2 {
+  margin: 0 0 20px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.admin-card-copy {
+  color: #667168;
+  line-height: 1.6;
+}
+
+.admin-card .auth-form select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d8d5c9;
+  border-radius: 12px;
+  background: #fbf9f3;
+  color: #1d2923;
+}
+
+.form-success {
+  margin: 8px 0 0;
+  color: #28563e;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 800px) {
+  .admin-intro {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .admin-intro img {
+    height: 260px;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-card {
+    padding: 22px;
+  }
+}
+
+.nav-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #47534b;
+  cursor: pointer;
+  font: inherit;
+}
+
+.nav-button:hover {
+  color: #174a39;
 }
