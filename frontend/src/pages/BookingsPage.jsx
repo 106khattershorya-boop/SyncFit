@@ -108,7 +108,7 @@ function BookingsPage() {
   }
 
   return (
-    <main className="home-page">
+    <main className="home-page inner-page">
       <section className="activities-section">
         <div className="section-heading">
           <div>
