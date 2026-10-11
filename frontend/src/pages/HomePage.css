@@ -1,0 +1,662 @@
+/* ==========================================================
+   SyncFit – Homepage styling (torn-paper scrapbook look)
+   Everything is scoped to .sf-home so other pages are untouched.
+   ========================================================== */
+
+.sf-home {
+  --ink: #17231d;
+  --muted: #5f6b62;
+  --green-deep: #12302a;
+  --green: #1d4a3b;
+  --green-paper: #2f4b3b;
+  --sage: #9db39d;
+  --sage-soft: #cbd8c6;
+  --paper: #f5f0e3;
+  --paper-edge: #e4dccb;
+  --serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --script: "Caveat", "Segoe Script", "Bradley Hand", cursive;
+
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 24px 40px 80px;
+  color: var(--ink);
+}
+
+/* Warm paper backdrop, only while the homepage is showing */
+body:has(.sf-home) {
+  background-color: #ece6d6;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgb(255 255 255 / 45%), transparent 40%),
+    radial-gradient(circle at 85% 60%, rgb(214 204 180 / 35%), transparent 45%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .4 0 0 0 0 .3 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ───────── Shared bits ───────── */
+
+.sf-eyebrow {
+  display: inline-block;
+  margin: 0 0 14px;
+  color: var(--green);
+  font-family: var(--script);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1;
+  text-transform: none;
+  transform: rotate(-4deg);
+  transform-origin: left center;
+}
+
+.sf-eyebrow-small {
+  font-size: 1.5rem;
+  margin-bottom: 6px;
+}
+
+/* Hand-painted green stroke under a word */
+.sf-brush {
+  display: inline;
+  padding-bottom: 0.12em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 14' preserveAspectRatio='none'%3E%3Cpath d='M2 8 C40 3 80 11 130 6 S230 3 298 7' fill='none' stroke='%232f5a45' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 0.2em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.sf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 26px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.sf-btn:hover {
+  transform: translateY(-2px);
+}
+
+.sf-btn-dark {
+  background: var(--green-deep);
+  color: #fbf8ee;
+  box-shadow: 0 8px 18px rgb(18 48 42 / 22%);
+}
+
+.sf-btn-dark::after {
+  content: "→";
+  font-size: 1.05rem;
+}
+
+.sf-btn-ghost {
+  border-color: var(--green-deep);
+  background: transparent;
+  color: var(--green-deep);
+}
+
+.sf-btn-ghost:hover {
+  background: rgb(18 48 42 / 7%);
+}
+
+/* ───────── Hero ───────── */
+
+.sf-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: 40px;
+  min-height: 560px;
+  padding: 24px 0 40px;
+}
+
+.sf-hero-copy {
+  position: relative;
+}
+
+.sf-hero h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 4.6vw, 4.4rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+
+.sf-hero-description {
+  max-width: 420px;
+  margin: 28px 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.sf-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-top: 34px;
+}
+
+.sf-note {
+  display: inline-block;
+  margin: 34px 0 0 8px;
+  color: var(--green);
+  font-family: var(--script);
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1.1;
+  transform: rotate(-4deg);
+}
+
+.sf-note::after {
+  content: " ☺";
+  font-size: 1.5rem;
+}
+
+/* Collage on the right */
+.sf-hero-art {
+  position: relative;
+  min-height: 540px;
+}
+
+.sf-scrap {
+  position: absolute;
+  z-index: 0;
+}
+
+.sf-scrap-green {
+  top: 2%;
+  right: 6%;
+  width: 58%;
+  height: 86%;
+  background: var(--green-paper);
+  clip-path: polygon(
+    22% 0%, 48% 4%, 72% 0%, 100% 8%, 94% 30%, 100% 54%, 90% 76%, 96% 100%,
+    64% 94%, 36% 100%, 8% 92%, 14% 64%, 0% 40%, 10% 18%
+  );
+}
+
+.sf-scrap-sage {
+  top: 30%;
+  right: -2%;
+  width: 52%;
+  height: 22%;
+  background: var(--sage);
+  opacity: 0.85;
+  transform: rotate(-32deg);
+  clip-path: polygon(0% 30%, 18% 8%, 46% 20%, 74% 0%, 100% 24%, 94% 70%, 70% 100%, 40% 80%, 14% 96%, 4% 64%);
+}
+
+.sf-scrap-paper {
+  bottom: 2%;
+  left: 14%;
+  width: 62%;
+  height: 20%;
+  background: #efe6d2;
+  clip-path: polygon(0% 40%, 12% 10%, 30% 28%, 52% 0%, 74% 24%, 100% 6%, 92% 60%, 100% 94%, 66% 78%, 40% 100%, 18% 82%, 6% 96%);
+}
+
+.sf-doodle-dumbbell {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: 12%;
+  width: 78px;
+  height: 40px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 40' fill='none' stroke='%2317231d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='14' y='8' width='7' height='24' rx='2'/%3E%3Crect x='7' y='13' width='6' height='14' rx='2'/%3E%3Crect x='59' y='8' width='7' height='24' rx='2'/%3E%3Crect x='67' y='13' width='6' height='14' rx='2'/%3E%3Cpath d='M21 20h38'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: rotate(-10deg);
+}
+
+.sf-hero-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 110%;
+  height: 520px;
+  margin: 0;
+  background: var(--sage-soft);
+  object-fit: cover;
+  object-position: center top;
+  filter: drop-shadow(0 12px 18px rgb(18 35 29 / 22%));
+  clip-path: polygon(
+    4% 3%, 18% 0%, 34% 3%, 52% 0%, 70% 3%, 86% 0%, 98% 4%,
+    100% 22%, 97% 42%, 100% 62%, 97% 82%, 99% 97%,
+    84% 100%, 66% 97%, 48% 100%, 30% 97%, 14% 100%, 2% 96%,
+    0% 76%, 3% 56%, 0% 36%, 3% 16%
+  );
+}
+
+.sf-hero-caption {
+  position: absolute;
+  z-index: 4;
+  right: 2%;
+  top: 22%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 150px;
+  color: #fff;;
+  font-family: var(--script);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1;
+  transform: rotate(-8deg);
+}
+
+.sf-hero-caption span:last-child {
+  font-size: 1.4rem;
+}
+
+/* ───────── Activities ───────── */
+
+.sf-activities {
+  margin-top: 36px;
+  padding: 36px 0 20px;
+}
+
+.sf-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 44px;
+}
+
+.sf-section-head h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.sf-view-all {
+  color: var(--green-deep);
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sf-view-all span {
+  margin-left: 6px;
+}
+
+.sf-view-all:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.sf-activity-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 30px 22px;
+  padding-bottom: 20px;
+}
+
+/* Arch-shaped card */
+.sf-activity-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--paper-edge);
+  border-radius: 50% 50% 22px 22px / 115px 115px 22px 22px;
+  background: rgb(250 246 235 / 85%);
+  box-shadow: 0 10px 24px rgb(40 50 38 / 10%);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.sf-activity-card:nth-child(even) {
+  transform: translateY(22px);
+}
+
+.sf-activity-card:hover {
+  box-shadow: 0 18px 32px rgb(40 50 38 / 16%);
+  transform: translateY(-6px);
+}
+
+.sf-activity-card:nth-child(even):hover {
+  transform: translateY(14px);
+}
+
+.sf-activity-photo {
+  margin: 8px 8px 0;
+  overflow: hidden;
+  border-radius: 50% 50% 0 0 / 107px 107px 0 0;
+  background: var(--sage-soft);
+}
+
+.sf-activity-photo img {
+  display: block;
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  transition: transform 500ms ease;
+}
+
+.sf-activity-card:hover .sf-activity-photo img {
+  transform: scale(1.06);
+}
+
+.sf-activity-info {
+  padding: 16px 20px 22px;
+  text-align: center;
+}
+
+.sf-activity-info h3 {
+  margin: 0 0 6px;
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.sf-activity-info p {
+  margin: 0;
+  color: var(--green);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.sf-activity-info p span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+/* ───────── How it works ───────── */
+
+.sf-how {
+  position: relative;
+  margin-top: 56px;
+  padding: 54px 52px 50px;
+  color: #fbf8ee;
+  background: var(--green-deep);
+  clip-path: polygon(
+    0% 4%, 6% 1%, 14% 3%, 23% 0%, 33% 3%, 44% 1%, 55% 3%, 66% 0%, 77% 3%, 88% 1%, 100% 4%,
+    99% 40%, 100% 70%, 98% 96%,
+    88% 99%, 77% 97%, 66% 100%, 55% 97%, 44% 99%, 33% 97%, 22% 100%, 11% 98%, 0% 99%,
+    1% 68%, 0% 36%
+  );
+}
+
+.sf-how > h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.sf-how-layout {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr) 210px;
+  align-items: center;
+  gap: 28px;
+  margin-top: 26px;
+}
+
+.sf-how-handnote {
+  color: var(--sage-soft);
+  font-family: var(--script);
+  font-size: 1.7rem;
+  font-weight: 600;
+  line-height: 1;
+  transform: rotate(-6deg);
+}
+
+.sf-how-handnote svg {
+  display: block;
+  width: 110px;
+  margin-top: 6px;
+}
+
+.sf-how-handnote path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.sf-how-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px;
+}
+
+.sf-step-number {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 14px;
+  place-items: center;
+  border-radius: 50%;
+  background: #3f7a5c;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.sf-how-step h3 {
+  margin: 0 0 6px;
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.sf-how-step p {
+  margin: 0;
+  color: #cfdccf;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.sf-how-cutout {
+  display: block;
+  width: 100%;
+  height: 200px;
+  background: #1c4338;
+  object-fit: cover;
+  clip-path: polygon(
+    10% 0%, 90% 2%, 100% 12%, 97% 28%, 100% 44%,
+    96% 60%, 100% 78%, 94% 100%, 12% 98%, 0% 84%,
+    4% 68%, 0% 48%, 5% 30%, 1% 12%
+  );
+}
+
+/* ───────── Booking note / CTA ───────── */
+
+.sf-cta {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px 32px;
+  margin-top: 40px;
+  padding: 40px 48px 40px 150px;
+  border: 1px solid var(--paper-edge);
+  border-radius: 28px;
+  background: rgb(250 246 235 / 90%);
+  box-shadow: 0 10px 28px rgb(40 50 38 / 10%);
+}
+
+.sf-leaf {
+  position: absolute;
+  top: 50%;
+  left: 36px;
+  width: 84px;
+  height: 120px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 120' fill='none' stroke='%232f5a45' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M40 118 C40 90 38 60 42 8'/%3E%3Cpath d='M41 40 C20 36 12 20 14 8 C32 8 42 22 41 40Z' fill='%232f5a45' fill-opacity='.85'/%3E%3Cpath d='M41 66 C62 62 70 46 68 34 C50 34 40 48 41 66Z' fill='%236f9a7f' fill-opacity='.8'/%3E%3Cpath d='M40 92 C22 88 16 76 18 66 C32 66 40 76 40 92Z' fill='%232f5a45' fill-opacity='.85'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: translateY(-50%) rotate(-4deg);
+}
+
+.sf-cta h2 {
+  max-width: 520px;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.sf-cta-copy > p:last-child {
+  max-width: 460px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* ───────── Tablet ───────── */
+
+@media (max-width: 1000px) {
+  .sf-home {
+    padding: 16px 28px 64px;
+  }
+
+  .sf-hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    gap: 24px;
+  }
+
+  .sf-hero-art {
+    min-height: 480px;
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .sf-hero-image {
+    height: 460px;
+  }
+
+  .sf-activity-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sf-how {
+    padding: 46px 32px 42px;
+  }
+
+  .sf-how-layout {
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  .sf-how-cutout {
+    display: none;
+  }
+
+  .sf-cta {
+    padding: 34px 32px 34px 130px;
+  }
+}
+
+/* ───────── Mobile ───────── */
+
+@media (max-width: 640px) {
+  .sf-home {
+    padding: 8px 18px 48px;
+  }
+
+  .sf-eyebrow {
+    font-size: 1.5rem;
+  }
+
+  .sf-hero h1 {
+    font-size: clamp(2.5rem, 12vw, 3.4rem);
+  }
+
+  .sf-hero-art {
+    min-height: 380px;
+  }
+
+  .sf-hero-image {
+    width: 84%;
+    height: 360px;
+  }
+
+  .sf-hero-caption {
+    font-size: 1.6rem;
+    top: 14%;
+  }
+
+  .sf-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 30px;
+  }
+
+  .sf-activity-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 0 12%;
+  }
+
+  .sf-activity-card:nth-child(even),
+  .sf-activity-card:nth-child(even):hover {
+    transform: none;
+  }
+
+  .sf-how {
+    padding: 42px 22px 38px;
+  }
+
+  .sf-how-layout {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .sf-how-handnote {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sf-how-handnote svg {
+    margin: 0;
+  }
+
+  .sf-how-steps {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .sf-how-step {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    column-gap: 14px;
+    align-items: start;
+  }
+
+  .sf-step-number {
+    grid-row: span 2;
+    margin: 0;
+  }
+
+  .sf-cta {
+    grid-template-columns: 1fr;
+    padding: 30px 24px 30px;
+  }
+
+  .sf-leaf {
+    position: static;
+    width: 56px;
+    height: 80px;
+    transform: rotate(-4deg);
+  }
+
+  .sf-cta-button {
+    justify-self: start;
+  }
+}
+

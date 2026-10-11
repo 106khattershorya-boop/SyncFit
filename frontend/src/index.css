@@ -1,5 +1,5 @@
 :root {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "DM Sans", Arial, Helvetica, sans-serif;
   color: #1d2923;
   background: #f6f3eb;
   font-synthesis: none;
@@ -30,23 +30,26 @@ input {
 }
 
 header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 12px 32px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #f6f3eb;
-  border-bottom: 0px solid #e5e0d4;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 12px 36px;
+  background: #fff;
+  border-bottom: 1px solid #e5e0d4;
+  box-shadow: 0 4px 14px rgb(29 41 35 / 8%);
 }
 
 header > a {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 2.25rem;
-  font-weight: 700;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 nav {
@@ -61,6 +64,39 @@ nav a:hover {
   color: #174a39;
 }
 
+/* Underline the link of the page you're on */
+nav a {
+  padding: 6px 0;
+  border-bottom: 1.5px solid transparent;
+  font-weight: 500;
+}
+
+header[data-page="/activities"] nav a[href="/activities"],
+header[data-page="/bookings"] nav a[href="/bookings"],
+header[data-page="/admin"] nav a[href="/admin"] {
+  border-bottom-color: #12302a;
+  color: #12302a;
+}
+
+/* Dark pill for the Log in / Log out call-to-action */
+nav a.nav-cta,
+nav .nav-button {
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: #12302a;
+  color: #fbf8ee;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+nav a.nav-cta:hover,
+nav .nav-button:hover {
+  background: #1d4a3b;
+  color: #fbf8ee;
+}
+
 main {
   max-width: 1200px;
   margin: 0 auto;
@@ -68,7 +104,7 @@ main {
 }
 
 h1 {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 500;
   letter-spacing: -0.04em;
@@ -92,4 +128,54 @@ nav {
   main {
     padding: 48px 20px;
   }
+}
+
+header > a.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #12302a;
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  fill: #12302a;
+  stroke: #12302a;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+
+.brand-word {
+  display: flex;
+  align-items: baseline;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.brand-dumbbell {
+  width: 0.58em;
+  height: 1.15em;
+  margin: 0 0.03em;
+  flex: 0 0 auto;
+  fill: currentColor;
+  vertical-align: middle;
+}
+
+.brand-copy small {
+  font-size: 0.48rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
 }

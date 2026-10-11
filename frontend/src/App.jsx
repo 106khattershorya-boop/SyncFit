@@ -30,7 +30,25 @@ function App() {
   return (
     <>
       <header data-page={location.pathname}>
-        <Link to="/">SyncFit</Link>
+        <Link className="brand" to="/" aria-label="SyncFit home">
+  <svg className="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+    <circle cx="25" cy="8" r="4" />
+    <path d="M23 15c-5 2-8 6-9 12l-2 9m12-20 7 8 8-2M21 27l-8 8m12-8 8 10" />
+    <path d="M5 12h10m-7-3v6m5-6v6M33 33h10m-7-3v6m5-6v6" />
+  </svg>
+
+  <span className="brand-copy">
+  <span className="brand-word">
+    SyncF
+    <svg className="brand-dumbbell" viewBox="0 0 28 40" aria-hidden="true">
+  <rect x="2" y="2" width="24" height="9" rx="3" />
+  <rect x="9" y="9" width="10" height="22" rx="4" />
+  <rect x="2" y="29" width="24" height="9" rx="3" />
+</svg>
+    t
+  </span>
+</span>
+    </Link>
 
         <nav aria-label="Main navigation">
           <Link to="/activities">Activities</Link>
@@ -48,7 +66,7 @@ function App() {
               </button>
             </>
           ) : (
-            <Link to="/login">Log in</Link>
+            <Link className="nav-cta" to="/login">Log in</Link>
           )}
         </nav>
       </header>
