@@ -122,6 +122,46 @@ function HomePage() {
         </div>
       </section>
 
+<section className="how-it-works" aria-labelledby="how-title">
+  <h2 id="how-title">How it works</h2>
+
+  <div className="how-layout">
+    <div className="how-handnote">
+      <span>3 simple<br />steps</span>
+      <svg viewBox="0 0 120 55" aria-hidden="true">
+        <path d="M5 12 C35 45 76 45 105 20 M91 15 L106 20 L98 34" />
+      </svg>
+    </div>
+
+    <div className="how-steps">
+      <article className="how-step">
+        <span className="step-number">01</span>
+        <h3>Choose an activity</h3>
+        <p>Pick from the activities that feel right for you.</p>
+      </article>
+
+      <article className="how-step">
+        <span className="step-number">02</span>
+        <h3>Select a session</h3>
+        <p>Find a date and time that works with your day.</p>
+      </article>
+
+      <article className="how-step">
+        <span className="step-number">03</span>
+        <h3>Book your spot</h3>
+        <p>Confirm your booking and get ready to move.</p>
+      </article>
+    </div>
+
+    <img
+      className="how-cutout"
+      src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=600&q=85"
+      alt="Athlete training at the gym"
+      loading="lazy"
+    />
+  </div>
+</section>
+      
       <section className="booking-note">
         <p className="eyebrow">Your next good hour</p>
         <h2>Choose a session. Save your spot.</h2>

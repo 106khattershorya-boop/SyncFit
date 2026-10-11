@@ -33,9 +33,14 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1200px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 24px 32px;
+  padding: 12px 32px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #f6f3eb;
+  border-bottom: 0px solid #e5e0d4;
 }
 
 header > a {
