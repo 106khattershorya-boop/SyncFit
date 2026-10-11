@@ -166,16 +166,24 @@ header > a.brand {
 }
 
 .brand-dumbbell {
-  width: 0.58em;
-  height: 1.15em;
-  margin: 0 0.03em;
+  position: relative;
+  top: 5px;
+  width: 0.9em;
+  height: 1em;
+  margin: 0 -0.12em;
   flex: 0 0 auto;
-  fill: currentColor;
-  vertical-align: middle;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transform: scale(1.7);
+  transform-origin: center;
 }
 
 .brand-copy small {
   font-size: 0.48rem;
   font-weight: 700;
   letter-spacing: 0.22em;
+}
+.brand-letters {
+  position: relative;
+  top: -4px;
 }

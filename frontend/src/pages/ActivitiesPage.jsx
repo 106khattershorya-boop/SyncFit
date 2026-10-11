@@ -12,25 +12,25 @@ const activities = [
     slug: 'strength_conditioning',
     name: 'Strength & Conditioning',
     image:
-      'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=700&q=85',
+      'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=85',
   },
   {
     slug: 'hiit',
     name: 'HIIT',
     image:
-      'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?auto=format&fit=crop&w=700&q=85',
+      'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=900&q=85',
   },
   {
     slug: 'zumba',
     name: 'Zumba',
     image:
-      'https://images.unsplash.com/photo-1504609813442-a8924e83f76e?auto=format&fit=crop&w=700&q=85',
+      'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?auto=format&fit=crop&w=900&q=85',
   },
   {
     slug: 'aerobics',
     name: 'Aerobics',
     image:
-      'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=700&q=85',
+      'https://images.unsplash.com/photo-1549576490-b0b4831ef60a?auto=format&fit=crop&w=900&q=85',
   },
   {
     slug: 'yoga',
@@ -42,19 +42,19 @@ const activities = [
     slug: 'pilates',
     name: 'Pilates',
     image:
-      'https://images.unsplash.com/photo-1510894347719-f2f2e6a1f3b5?auto=format&fit=crop&w=700&q=85',
+      'https://images.unsplash.com/photo-1747238415033-b74eec07eb59?auto=format&fit=crop&w=900&q=85',
   },
   {
     slug: 'swimming',
     name: 'Swimming',
     image:
-      'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=700&q=85',
+      'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=900&q=85',
   },
   {
     slug: 'sauna',
     name: 'Sauna',
     image:
-      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=700&q=85',
+      'https://images.unsplash.com/photo-1717356495389-6ab1e5ff9d84?auto=format&fit=crop&w=900&q=85',
   },
 ]
 
@@ -189,6 +189,25 @@ function ActivitiesPage() {
             ))}
           </select>
         </label>
+
+        <div className="activity-discovery">
+  <p className="eyebrow">Find your kind of movement</p>
+  <div className="activity-discovery-grid">
+    {activities.map((activity) => (
+      <button
+        className={`activity-tile ${
+          selectedActivity === activity.slug ? 'is-selected' : ''
+        }`}
+        key={activity.slug}
+        type="button"
+        onClick={() => setSelectedActivity(activity.slug)}
+      >
+        <img src={activity.image} alt="" loading="lazy" />
+        <span>{activity.name}</span>
+      </button>
+    ))}
+  </div>
+</div>
 
         {loading && <p>Loading upcoming sessions…</p>}
 

@@ -30,7 +30,7 @@ function RegisterPage() {
     <main className="auth-page">
       <section className="auth-image-panel">
         <img
-          src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=85"
+          src="https://images.unsplash.com/photo-1447452001602-7090c7ab2db3?auto=format&fit=crop&w=1200&q=85"
           alt="A person stretching in a bright studio"
         />
         <p className="auth-image-caption">Your routine can start with one session.</p>
