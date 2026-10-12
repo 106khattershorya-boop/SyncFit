@@ -10,7 +10,8 @@ from app.schemas.checkin import CheckInRequest, CheckInResponse
 
 
 def generate_checkin_code() -> str:
-    return secrets.token_hex(3).upper()
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    return "".join(secrets.choice(alphabet) for _ in range(6))
 
 
 async def check_in_member(
