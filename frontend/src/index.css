@@ -17,6 +17,11 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
+  background-color: #ece6d6;
+background-image:
+  radial-gradient(circle at 15% 10%, rgb(255 255 255 / 45%), transparent 40%),
+  radial-gradient(circle at 85% 60%, rgb(214 204 180 / 35%), transparent 45%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .4 0 0 0 0 .3 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 a {

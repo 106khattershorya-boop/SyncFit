@@ -1,5 +1,6 @@
 from datetime import date, datetime, time, timedelta, timezone
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from pymongo.asynchronous.database import AsyncDatabase
 
@@ -26,6 +27,21 @@ async def create_session(
     database: AsyncDatabase,
 ) -> SessionResponse:
     starts_at = data.starts_at.astimezone(timezone.utc)
+    india_time = timezone(timedelta(hours=5, minutes=30))
+    local_starts_at = starts_at.astimezone(india_time)
+
+    if (
+        local_starts_at.hour < 6
+        or local_starts_at.hour > 21
+        or local_starts_at.minute != 0
+        or local_starts_at.second != 0
+        or local_starts_at.microsecond != 0
+    ):
+        raise ApiError(
+            status_code=422,
+            code="SESSION_OUTSIDE_WORKING_HOURS",
+            message="Sessions must start on the hour between 6:00 am and 9:00 pm India time.",
+        )
 
     if starts_at <= datetime.now(timezone.utc):
         raise ApiError(

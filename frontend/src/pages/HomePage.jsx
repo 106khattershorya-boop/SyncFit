@@ -4,7 +4,7 @@ import './HomePage.css'
 // Tip: to swap a photo, just replace the `image` URL below.
 const activities = [
   {
-    name: 'Strength & Conditioning',
+    name: 'Strength',
     price: 300,
     image:
       'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=85',

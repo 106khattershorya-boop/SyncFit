@@ -10,7 +10,7 @@ import {
 } from '../services/api.js'
 
 const activities = [
-  { slug: 'strength_conditioning', name: 'Strength & Conditioning' },
+  { slug: 'strength_conditioning', name: 'Strength' },
   { slug: 'hiit', name: 'HIIT' },
   { slug: 'zumba', name: 'Zumba' },
   { slug: 'aerobics', name: 'Aerobics' },
@@ -301,21 +301,25 @@ useEffect(() => {
       <option value="">No sessions available</option>
     ) : (
       sessions.map((session) => {
-        const activityName =
-          activities.find((activity) => activity.slug === session.activity_type)
-            ?.name ?? session.activity_type
+  const activityName =
+    activities.find((activity) => activity.slug === session.activity_type)
+      ?.name ?? session.activity_type
 
-        const sessionTime = new Intl.DateTimeFormat('en-IN', {
-          dateStyle: 'medium',
-          timeStyle: 'short',
-        }).format(new Date(session.starts_at))
+  const shortActivityName =
+    activityName === 'Strength' ? 'Strength' : activityName
 
-        return (
-          <option key={session.id} value={session.id}>
-            {activityName} · {sessionTime}
-          </option>
-        )
-      })
+  const sessionTime = new Intl.DateTimeFormat('en-IN', {
+  day: 'numeric',
+  month: 'short',
+  hour: 'numeric',
+}).format(new Date(session.starts_at))
+
+  return (
+    <option key={session.id} value={session.id}>
+      {shortActivityName} · {sessionTime}
+    </option>
+  )
+})
     )}
   </select>
 

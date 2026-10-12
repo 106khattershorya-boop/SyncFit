@@ -8,6 +8,14 @@ A gym session booking app. Members can register, browse upcoming activities, boo
 - Database: MongoDB
 - Frontend: React
 
+## Design note
+
+SyncFit uses React for the frontend, FastAPI for the API, and MongoDB for storage.
+The database has users, sessions, bookings, and waitlist entries.
+Users have member or admin roles.
+MongoDB transactions keep booking counts and waitlist promotions consistent.
+Indexes help prevent duplicate sessions, bookings, waitlist entries, and check-in codes.
+
 ## Project structure
 
     SyncFit/
@@ -81,7 +89,7 @@ Prices are per one-hour session. Each session has 20 slots.
 
 | Activity | Price |
 |---|---:|
-| Strength & Conditioning | ₹300 |
+| Strength | ₹300 |
 | HIIT | ₹250 |
 | Zumba | ₹250 |
 | Aerobics | ₹200 |
@@ -107,6 +115,15 @@ npm run dev
 ```
 
 The frontend runs at http://localhost:5173. Start the backend separately; it runs at http://127.0.0.1:8000 by default. The frontend uses `http://127.0.0.1:8000/api` as its API URL unless `VITE_API_URL` is set.
+
+## Demo credentials
+
+- Admin email: `<test.admin@example.com>`
+- Admin password: `<GymFit123!>`
+- Member1 email: `<106khatter.shorya@gmail.com>`
+- Member2 email: `<aryanagarwal123@gmail.com>`
+- Member1 password: `<S37ze8KVsa!LTqa>`
+- Member2 password: `<9876543210>`
 
 ## Assumptions
 

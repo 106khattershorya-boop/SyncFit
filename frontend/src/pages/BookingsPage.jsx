@@ -8,7 +8,7 @@ import {
 } from '../services/api.js'
 
 const activityNames = {
-  strength_conditioning: 'Strength & Conditioning',
+  strength_conditioning: 'Strength',
   hiit: 'HIIT',
   zumba: 'Zumba',
   aerobics: 'Aerobics',
@@ -26,7 +26,7 @@ function formatSessionTime(value) {
 }
 
 const bookingImages = {
-  'Strength & Conditioning':
+  'Strength':
     'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=85',
   HIIT:
     'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=900&q=85',

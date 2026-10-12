@@ -13,7 +13,7 @@ import {
 const activities = [
   {
     slug: 'strength_conditioning',
-    name: 'Strength & Conditioning',
+    name: 'Strength',
     image:
       'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=85',
   },
@@ -155,6 +155,9 @@ return () => {
   if (!checkoutSession) return
 
   const sessionId = checkoutSession.id
+  const previousSeatsRemaining = sessions.find(
+    (session) => session.id === sessionId,
+  )?.seats_remaining
 
   setPendingSessionId(sessionId)
   setError('')
@@ -180,6 +183,16 @@ return () => {
     const booking = await createBooking(sessionId)
     setBookingResult(booking)
   } catch (requestError) {
+    if (previousSeatsRemaining !== undefined) {
+      setSessions((currentSessions) =>
+        currentSessions.map((session) =>
+          session.id === sessionId
+            ? { ...session, seats_remaining: previousSeatsRemaining }
+            : session,
+        ),
+      )
+    }
+
     setBookedSessionIds((current) => {
       const updated = new Set(current)
       updated.delete(sessionId)
@@ -190,7 +203,7 @@ return () => {
       const latestSessions = await getUpcomingSessions(undefined, sessionDate)
       setSessions(latestSessions)
     } catch {
-      // The next scheduled refresh will fetch the latest seat count.
+      
     }
 
     setError(requestError.message)
@@ -272,7 +285,9 @@ setNotice(`You joined the waitlist for ${getActivityName(session)}.`)
             <option value="all">All activities</option>
             {activities.map((activity) => (
               <option key={activity.slug} value={activity.slug}>
-                {activity.name}
+                {activity.slug === 'strength_conditioning'
+                  ? 'Strength'
+                  : activity.name}
               </option>
             ))}
           </select>
