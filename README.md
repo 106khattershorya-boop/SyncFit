@@ -55,20 +55,21 @@ uvicorn app.main:app --reload
 
 The API creates its MongoDB indexes when it starts.
 
-## API routes
-
 | Method | Route | Description |
 |---|---|---|
-| POST | `/api/auth/register` | Register |
-| POST | `/api/auth/login` | Login |
-| GET | `/api/sessions` | List upcoming sessions |
-| GET | `/api/sessions?activity_type=zumba` | Filter sessions by activity |
+| POST | `/api/auth/register` | Register a member |
+| POST | `/api/auth/login` | Log in |
+| GET | `/api/auth/me` | Get the current account |
+| GET | `/api/sessions` | List upcoming sessions; supports activity and date filters |
 | POST | `/api/sessions` | Create a session (admin) |
-| POST | `/api/bookings` | Book a session |
-| GET | `/api/bookings/me` | List my bookings |
-| DELETE | `/api/bookings/{booking_id}` | Cancel a booking |
-| POST | `/api/waitlist` | Join a waitlist |
-| DELETE | `/api/waitlist/{session_id}` | Leave a waitlist |
+| GET | `/api/sessions/admin` | List sessions for admin tools (admin) |
+| GET | `/api/sessions/{session_id}/bookings` | List a session’s bookings (admin) |
+| POST | `/api/bookings` | Book a session (member) |
+| GET | `/api/bookings/me` | List the current account’s bookings |
+| DELETE | `/api/bookings/{booking_id}` | Cancel a booking (member) |
+| POST | `/api/waitlist` | Join a waitlist (member) |
+| GET | `/api/waitlist` | List the current member’s waitlists |
+| DELETE | `/api/waitlist/{session_id}` | Leave a waitlist (member) |
 | POST | `/api/checkins` | Check in a member (admin) |
 | GET | `/health` | Check API health |
 
@@ -91,11 +92,21 @@ Prices are per one-hour session. Each session has 20 slots.
 
 ## Mock payment
 
-The frontend will demonstrate a mock checkout flow. It does not connect to a payment processor, charge money, or store card details.
+Checkout offers mock card, UPI, and cash-at-gym options. Card and UPI simulate payment for the demo; no payment processor is connected, no real money is charged, and no card details are stored. Cash-at-gym bookings are paid in person.
 
 ## Frontend
 
-The React frontend is planned. Setup and run instructions will be added when it is created.
+Requirements: Node.js and npm.
+
+From the project root:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend runs at http://localhost:5173. Start the backend separately; it runs at http://127.0.0.1:8000 by default. The frontend uses `http://127.0.0.1:8000/api` as its API URL unless `VITE_API_URL` is set.
 
 ## Assumptions
 
@@ -104,7 +115,8 @@ The React frontend is planned. Setup and run instructions will be added when it 
 - Session dates and times are stored as timezone-aware datetimes.
 - Sessions start on the hour; the listed activity prices and 20-slot capacity apply to each one-hour session.
 - When a booking is cancelled, the earliest waiting member is promoted if a waitlist entry exists.
-- Only admins can create sessions and check members in.
+- Only admins can create sessions, view session bookings, and check members in.
+- Only member accounts can create or cancel bookings and join, view, or leave waitlists.
 - Check-in is allowed only during the session’s check-in window.
 - Related booking and session updates use MongoDB transactions; the MongoDB deployment must support transactions.
 - The mock checkout is for demonstration only; payment is handled at the gym.
