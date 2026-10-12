@@ -8,6 +8,7 @@ from pymongo.asynchronous.database import AsyncDatabase
 
 from app.core.security import decode_access_token
 from app.db.mongo import get_database
+from app.core.errors import ApiError
 
 
 bearer_scheme = HTTPBearer(auto_error=False)
@@ -59,6 +60,18 @@ async def require_admin(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin access is required.",
+        )
+
+    return current_user
+
+async def require_member(
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, Any]:
+    if current_user.get("role") != "member":
+        raise ApiError(
+            status_code=403,
+            code="MEMBER_ACCESS_REQUIRED",
+            message="This action is only available to member accounts.",
         )
 
     return current_user

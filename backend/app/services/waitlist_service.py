@@ -187,3 +187,27 @@ async def promote_next_waitlist_entry(
     )
 
     return True
+
+    await database.bookings.insert_one(
+        {
+            "member_id": entry["member_id"],
+            "session_id": session_id,
+            "status": "confirmed",
+            "checkin_code": generate_checkin_code(),
+            "booked_at": now,
+        }
+    )
+
+    return True
+
+
+async def get_member_waitlist(
+    member_id: ObjectId,
+    database: AsyncDatabase,
+) -> list[str]:
+    cursor = database.waitlist_entries.find(
+        {"member_id": member_id, "status": "waiting"},
+        {"_id": 0, "session_id": 1},
+    )
+    entries = await cursor.to_list(length=None)
+    return [str(entry["session_id"]) for entry in entries]

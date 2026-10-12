@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import {
   createBooking,
+  getMyBookings,
+  getMyWaitlist,
   getUpcomingSessions,
   isLoggedIn,
   joinWaitlist,
+  leaveWaitlist,
 } from '../services/api.js'
 
 const activities = [
@@ -65,34 +68,67 @@ function formatSessionTime(value) {
   }).format(new Date(value))
 }
 
-function ActivitiesPage() {
+function ActivitiesPage({isAdmin}) {
   const [sessions, setSessions] = useState([])
   const [selectedActivity, setSelectedActivity] = useState('all')
+  const [sessionDate, setSessionDate] = useState('')
   const [checkoutSession, setCheckoutSession] = useState(null)
   const [bookingResult, setBookingResult] = useState(null)
   const [loading, setLoading] = useState(true)
   const [pendingSessionId, setPendingSessionId] = useState('')
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [bookedSessionIds, setBookedSessionIds] = useState(() => new Set())
+  const [waitlistedSessionIds, setWaitlistedSessionIds] = useState(() => new Set())
+  const [paymentMethod, setPaymentMethod] = useState('card')
 
   useEffect(() => {
-    let isActive = true
+    setLoading(true)
+    setError('')
+  let isActive = true
 
-    getUpcomingSessions()
-      .then((data) => {
-        if (isActive) setSessions(data)
-      })
-      .catch((requestError) => {
-        if (isActive) setError(requestError.message)
-      })
-      .finally(() => {
-        if (isActive) setLoading(false)
-      })
+  async function loadActivities() {
+    try {
+      const [sessionData, bookings, waitlistSessionIds] = await Promise.all([
+        getUpcomingSessions(undefined, sessionDate),
+        isLoggedIn() ? getMyBookings() : Promise.resolve([]),
+        isLoggedIn() ? getMyWaitlist() : Promise.resolve([]),
+      ])
 
-    return () => {
-      isActive = false
+      if (!isActive) return
+
+      setSessions(sessionData)
+      setBookedSessionIds(
+        new Set(
+          bookings
+            .filter((booking) => booking.status === 'confirmed')
+            .map((booking) => booking.session_id),
+        ),
+      )
+      setWaitlistedSessionIds(new Set(waitlistSessionIds))
+    } catch (requestError) {
+      if (isActive) setError(requestError.message)
+    } finally {
+      if (isActive) setLoading(false)
     }
-  }, [])
+  }
+
+  loadActivities()
+
+const refreshInterval = window.setInterval(async () => {
+  try {
+    const latestSessions = await getUpcomingSessions(undefined, sessionDate)
+    if (isActive) setSessions(latestSessions)
+  } catch (refreshError) {
+    console.error('Could not refresh session availability.', refreshError)
+  }
+}, 30000)
+
+return () => {
+  isActive = false
+  window.clearInterval(refreshInterval)
+}
+}, [sessionDate])
 
   const visibleSessions =
     selectedActivity === 'all'
@@ -106,6 +142,7 @@ function ActivitiesPage() {
     setBookingResult(null)
     setError('')
     setNotice('')
+    setPaymentMethod('card')
   }
 
   function closeCheckout() {
@@ -115,30 +152,52 @@ function ActivitiesPage() {
   }
 
   async function confirmMockPayment() {
-    if (!checkoutSession) return
+  if (!checkoutSession) return
 
-    setPendingSessionId(checkoutSession.id)
-    setError('')
+  const sessionId = checkoutSession.id
+
+  setPendingSessionId(sessionId)
+  setError('')
+
+  setBookedSessionIds((current) => {
+    const updated = new Set(current)
+    updated.add(sessionId)
+    return updated
+  })
+
+  setSessions((currentSessions) =>
+    currentSessions.map((session) =>
+      session.id === sessionId
+        ? {
+            ...session,
+            seats_remaining: Math.max(0, session.seats_remaining - 1),
+          }
+        : session,
+    ),
+  )
+
+  try {
+    const booking = await createBooking(sessionId)
+    setBookingResult(booking)
+  } catch (requestError) {
+    setBookedSessionIds((current) => {
+      const updated = new Set(current)
+      updated.delete(sessionId)
+      return updated
+    })
 
     try {
-      const booking = await createBooking(checkoutSession.id)
-      setBookingResult(booking)
-      setSessions((currentSessions) =>
-        currentSessions.map((session) =>
-          session.id === checkoutSession.id
-            ? {
-                ...session,
-                seats_remaining: Math.max(0, session.seats_remaining - 1),
-              }
-            : session,
-        ),
-      )
-    } catch (requestError) {
-      setError(requestError.message)
-    } finally {
-      setPendingSessionId('')
+      const latestSessions = await getUpcomingSessions(undefined, sessionDate)
+      setSessions(latestSessions)
+    } catch {
+      // The next scheduled refresh will fetch the latest seat count.
     }
+
+    setError(requestError.message)
+  } finally {
+    setPendingSessionId('')
   }
+}
 
   async function handleJoinWaitlist(session) {
     setPendingSessionId(session.id)
@@ -147,13 +206,42 @@ function ActivitiesPage() {
 
     try {
       await joinWaitlist(session.id)
-      setNotice(`You joined the waitlist for ${getActivityName(session)}.`)
+
+setWaitlistedSessionIds((current) => {
+  const updated = new Set(current)
+  updated.add(session.id)
+  return updated
+})
+
+setNotice(`You joined the waitlist for ${getActivityName(session)}.`)
     } catch (requestError) {
       setError(requestError.message)
     } finally {
       setPendingSessionId('')
     }
   }
+
+  async function handleLeaveWaitlist(session) {
+  setPendingSessionId(session.id)
+  setError('')
+  setNotice('')
+
+  try {
+    await leaveWaitlist(session.id)
+
+    setWaitlistedSessionIds((current) => {
+      const updated = new Set(current)
+      updated.delete(session.id)
+      return updated
+    })
+
+    setNotice(`You left the waitlist for ${getActivityName(session)}.`)
+  } catch (requestError) {
+    setError(requestError.message)
+  } finally {
+    setPendingSessionId('')
+  }
+}
 
   function getActivityName(session) {
     return (
@@ -188,6 +276,15 @@ function ActivitiesPage() {
               </option>
             ))}
           </select>
+                </label>
+
+        <label className="activity-filter">
+          <span>Date</span>
+          <input
+            type="date"
+            value={sessionDate}
+            onChange={(event) => setSessionDate(event.target.value)}
+          />
         </label>
 
         <div className="activity-discovery">
@@ -237,6 +334,8 @@ function ActivitiesPage() {
               )
               const isFull = session.seats_remaining === 0
               const isPending = pendingSessionId === session.id
+              const isBooked = bookedSessionIds.has(session.id)
+              const isWaitlisted = waitlistedSessionIds.has(session.id)
 
               return (
                 <article className="session-card" key={session.id}>
@@ -259,25 +358,42 @@ function ActivitiesPage() {
                   </div>
 
                   {!isLoggedIn() ? (
-                    <Link className="button button-dark" to="/login">
-                      Log in to continue
-                    </Link>
-                  ) : isFull ? (
-                    <button
-                      className="button button-dark"
-                      disabled={isPending}
-                      onClick={() => handleJoinWaitlist(session)}
-                    >
-                      {isPending ? 'Joining…' : 'Join waitlist'}
-                    </button>
-                  ) : (
-                    <button
-                      className="button button-dark"
-                      onClick={() => startCheckout(session)}
-                    >
-                      Book session
-                    </button>
-                  )}
+  <Link className="button button-dark" to="/login">
+    Log in to continue
+  </Link>
+) : isAdmin ? (
+  <p className="session-detail">Booking is for member accounts.</p>
+) : isBooked ? (
+  <button className="button button-dark" disabled>
+    Booked
+  </button>
+) : isFull ? (
+  isWaitlisted ? (
+    <button
+      className="button button-outline"
+      disabled={isPending}
+      onClick={() => handleLeaveWaitlist(session)}
+    >
+      {isPending ? 'Leaving…' : 'Leave waitlist'}
+    </button>
+  ) : (
+    <button
+      className="button button-dark"
+      disabled={isPending}
+      onClick={() => handleJoinWaitlist(session)}
+    >
+      {isPending ? 'Joining…' : 'Join waitlist'}
+    </button>
+  )
+) : (
+  <button
+    className="button button-dark"
+    disabled={isPending}
+    onClick={() => startCheckout(session)}
+  >
+    Book session
+  </button>
+)}
                 </article>
               )
             })}
@@ -313,34 +429,53 @@ function ActivitiesPage() {
               </>
             ) : (
               <>
-                <p className="eyebrow">Demo checkout</p>
-                <h2 id="checkout-title">Review your session</h2>
-                <p>
-                  {getActivityName(checkoutSession)} ·{' '}
-                  {formatSessionTime(checkoutSession.starts_at)}
-                </p>
-                <p className="checkout-price">
-                  ₹{checkoutSession.price_rupees}
-                </p>
-                <p className="session-detail">
-                  This is a mock payment for the project demo. No card details
-                  are needed and no real payment will be taken.
-                </p>
+                <p className="eyebrow">Choose how to pay</p>
+<h2 id="checkout-title">Review your session</h2>
+<p>
+  {getActivityName(checkoutSession)} ·{' '}
+  {formatSessionTime(checkoutSession.starts_at)}
+</p>
 
-                {error && <p className="form-error" role="alert">{error}</p>}
+<p className="checkout-price">
+  ₹{checkoutSession.price_rupees}
+</p>
 
-                <button
-                  className="button button-dark"
-                  disabled={pendingSessionId === checkoutSession.id}
-                  onClick={confirmMockPayment}
-                >
-                  {pendingSessionId === checkoutSession.id
-                    ? 'Confirming…'
-                    : `Confirm demo booking · ₹${checkoutSession.price_rupees}`}
-                </button>
-                <button className="checkout-cancel" onClick={closeCheckout}>
-                  Go back
-                </button>
+<label className="payment-method-field" htmlFor="payment-method">
+  Payment method
+  <select
+    id="payment-method"
+    value={paymentMethod}
+    onChange={(event) => setPaymentMethod(event.target.value)}
+  >
+    <option value="card">Card · mock payment</option>
+    <option value="upi">UPI · mock payment</option>
+    <option value="cash">Cash at Gym</option>
+  </select>
+</label>
+
+<p className="session-detail">
+  {paymentMethod === 'cash'
+    ? 'Your spot will be reserved. Pay at the studio.'
+    : `This will simulate a ${paymentMethod === 'card' ? 'card' : 'UPI'} payment. No real payment will be taken.`}
+</p>
+
+{error && <p className="form-error" role="alert">{error}</p>}
+
+<button
+  className="button button-dark"
+  disabled={pendingSessionId === checkoutSession.id}
+  onClick={confirmMockPayment}
+>
+  {pendingSessionId === checkoutSession.id
+    ? 'Processing…'
+    : paymentMethod === 'cash'
+      ? `Reserve and pay at Gym · ₹${checkoutSession.price_rupees}`
+      : `Pay with ${paymentMethod === 'card' ? 'card' : 'UPI'} · ₹${checkoutSession.price_rupees}`}
+</button>
+
+<button className="checkout-cancel" onClick={closeCheckout}>
+  Go back
+</button>
               </>
             )}
           </section>

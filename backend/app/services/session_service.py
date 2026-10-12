@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from typing import Any
 
 from pymongo.asynchronous.database import AsyncDatabase
@@ -54,18 +54,55 @@ async def create_session(
         seats_remaining=session["capacity"],
     )
 
-
 async def list_sessions(
     database: AsyncDatabase,
     activity_type: ActivityType | None = None,
+    session_date: date | None = None,
 ) -> list[SessionResponse]:
     now = datetime.now(timezone.utc)
-    query: dict[str, Any] = {"starts_at": {"$gte": now}}
+
+    if session_date is None:
+        query: dict[str, Any] = {"starts_at": {"$gte": now}}
+    else:
+        india_time = timezone(timedelta(hours=5, minutes=30))
+        day_start = datetime.combine(
+            session_date,
+            time.min,
+            tzinfo=india_time,
+        ).astimezone(timezone.utc)
+        day_end = day_start + timedelta(days=1)
+
+        query = {
+            "starts_at": {
+                "$gte": max(now, day_start),
+                "$lt": day_end,
+            }
+        }
 
     if activity_type is not None:
         query["activity_type"] = activity_type
 
     cursor = database.sessions.find(query).sort("starts_at", 1)
+    sessions: list[SessionResponse] = []
+
+    async for session in cursor:
+        sessions.append(
+            SessionResponse(
+                id=str(session["_id"]),
+                starts_at=session["starts_at"],
+                activity_type=session["activity_type"],
+                price_rupees=session["price_rupees"],
+                capacity=session["capacity"],
+                seats_remaining=session["capacity"] - session["booked_count"],
+            )
+        )
+
+    return sessions
+
+async def list_all_sessions(
+    database: AsyncDatabase,
+) -> list[SessionResponse]:
+    cursor = database.sessions.find({}).sort("starts_at", -1)
 
     sessions: list[SessionResponse] = []
 

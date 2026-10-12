@@ -1,6 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { checkInMember, createSession, isLoggedIn } from '../services/api.js'
+import {
+  checkInMember,
+  createSession,
+  getAdminSessions,
+  getSessionBookings,
+  isLoggedIn,
+  getCurrentUser,
+} from '../services/api.js'
 
 const activities = [
   { slug: 'strength_conditioning', name: 'Strength & Conditioning' },
@@ -23,6 +30,87 @@ function AdminPage() {
   const [checkinMessage, setCheckinMessage] = useState('')
   const [sessionError, setSessionError] = useState('')
   const [checkinError, setCheckinError] = useState('')
+  const [sessions, setSessions] = useState([])
+  const [selectedSessionId, setSelectedSessionId] = useState('')
+  const [sessionBookings, setSessionBookings] = useState([])
+  const [bookingsLoading, setBookingsLoading] = useState(false)
+  const [bookingsError, setBookingsError] = useState('')
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [checkingRole, setCheckingRole] = useState(isLoggedIn())
+
+  useEffect(() => {
+    if (!isLoggedIn()) {
+      setCheckingRole(false)
+      return
+    }
+
+    let active = true
+
+    getCurrentUser()
+      .then((user) => {
+        if (active) setIsAdmin(user.role === 'admin')
+      })
+      .catch((error) => {
+        if (active) setBookingsError(error.message)
+      })
+      .finally(() => {
+        if (active) setCheckingRole(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isAdmin) return
+
+  let active = true
+
+  getAdminSessions()
+    .then((data) => {
+      if (!active) return
+
+      setSessions(data)
+      if (data.length > 0) {
+        setSelectedSessionId(data[0].id)
+      }
+    })
+    .catch((requestError) => {
+      if (active) setBookingsError(requestError.message)
+    })
+
+  return () => {
+    active = false
+  }
+}, [isAdmin])
+
+useEffect(() => {
+  if (!selectedSessionId || !isLoggedIn()) {
+    setSessionBookings([])
+    return
+  }
+
+  let active = true
+  setBookingsLoading(true)
+  setBookingsError('')
+
+  getSessionBookings(selectedSessionId)
+    .then((data) => {
+      if (active) setSessionBookings(data)
+    })
+    .catch((requestError) => {
+      if (active) setBookingsError(requestError.message)
+    })
+    .finally(() => {
+      if (active) setBookingsLoading(false)
+    })
+
+  return () => {
+    active = false
+  }
+}, [selectedSessionId])
+
 
   async function handleCreateSession(event) {
     event.preventDefault()
@@ -79,6 +167,32 @@ function AdminPage() {
           <p>Only an admin can create sessions and check in members.</p>
           <Link className="button button-dark" to="/login">
             Go to log in
+          </Link>
+        </section>
+      </main>
+    )
+  }
+
+    if (checkingRole) {
+    return (
+      <main className="home-page">
+        <section className="booking-empty">
+          <p className="eyebrow">Studio tools</p>
+          <h1>Checking access…</h1>
+        </section>
+      </main>
+    )
+  }
+
+  if (!isAdmin) {
+    return (
+      <main className="home-page">
+        <section className="booking-empty">
+          <p className="eyebrow">Studio tools</p>
+          <h1>Admin access required.</h1>
+          <p>Only an admin can create sessions and check in members.</p>
+          <Link className="button button-dark" to="/activities">
+            Back to activities
           </Link>
         </section>
       </main>
@@ -172,6 +286,69 @@ function AdminPage() {
           </form>
         </section>
       </div>
+      <section className="admin-card admin-session-bookings">
+  <p className="eyebrow">Session attendance</p>
+  <h2>Bookings and check-ins</h2>
+
+  <label htmlFor="booking-session">Choose a session</label>
+  <select
+    id="booking-session"
+    value={selectedSessionId}
+    onChange={(event) => setSelectedSessionId(event.target.value)}
+    disabled={sessions.length === 0}
+  >
+    {sessions.length === 0 ? (
+      <option value="">No sessions available</option>
+    ) : (
+      sessions.map((session) => {
+        const activityName =
+          activities.find((activity) => activity.slug === session.activity_type)
+            ?.name ?? session.activity_type
+
+        const sessionTime = new Intl.DateTimeFormat('en-IN', {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        }).format(new Date(session.starts_at))
+
+        return (
+          <option key={session.id} value={session.id}>
+            {activityName} · {sessionTime}
+          </option>
+        )
+      })
+    )}
+  </select>
+
+  {bookingsLoading && <p>Loading bookings…</p>}
+
+  {bookingsError && (
+    <p className="form-error" role="alert">
+      {bookingsError}
+    </p>
+  )}
+
+  {!bookingsLoading && !bookingsError && sessionBookings.length === 0 && (
+    <p>No bookings for this session yet.</p>
+  )}
+
+  {!bookingsLoading && sessionBookings.length > 0 && (
+    <ul className="admin-booking-list">
+      {sessionBookings.map((booking) => (
+        <li key={booking.id}>
+          <strong>{booking.member_name || 'Member'}</strong>
+          <span>{booking.member_email || 'Email unavailable'}</span>
+          <span>
+            {booking.status === 'cancelled'
+              ? 'Cancelled'
+              : booking.checked_in_at
+                ? 'Checked in'
+                : 'Not checked in'}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )}
+</section>
     </main>
   )
 }

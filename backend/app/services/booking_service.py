@@ -10,6 +10,11 @@ from app.services.checkin_service import generate_checkin_code
 from app.db.transactions import run_transaction
 from app.schemas.booking import BookingCreateRequest, BookingResponse
 from app.services.waitlist_service import promote_next_waitlist_entry
+from app.schemas.booking import (
+    AdminSessionBookingResponse,
+    BookingCreateRequest,
+    BookingResponse,
+)
 
 
 async def create_booking(
@@ -237,3 +242,65 @@ async def cancel_booking(
         )
 
     return await run_transaction(database.client, cancel)
+
+async def list_session_bookings(
+    session_id: ObjectId,
+    database: AsyncDatabase,
+) -> list[AdminSessionBookingResponse]:
+    session = await database.sessions.find_one({"_id": session_id})
+
+    if session is None:
+        raise ApiError(
+            404,
+            "SESSION_NOT_FOUND",
+            "The requested session was not found.",
+        )
+
+    cursor = await database.bookings.aggregate(
+        [
+            {"$match": {"session_id": session_id}},
+            {"$sort": {"booked_at": -1}},
+            {
+                "$lookup": {
+                    "from": "users",
+                    "localField": "member_id",
+                    "foreignField": "_id",
+                    "as": "member",
+                }
+            },
+            {
+                "$unwind": {
+                    "path": "$member",
+                    "preserveNullAndEmptyArrays": True,
+                }
+            },
+            {
+                "$project": {
+                    "_id": 1,
+                    "member_id": 1,
+                    "member_name": "$member.name",
+                    "member_email": "$member.email",
+                    "status": 1,
+                    "booked_at": 1,
+                    "checkin_code": 1,
+                    "checked_in_at": 1,
+                }
+            },
+        ]
+    )
+
+    bookings = await cursor.to_list(length=None)
+
+    return [
+        AdminSessionBookingResponse(
+            id=str(booking["_id"]),
+            member_id=str(booking["member_id"]),
+            member_name=booking.get("member_name"),
+            member_email=booking.get("member_email"),
+            status=booking["status"],
+            booked_at=booking["booked_at"],
+            checkin_code=booking.get("checkin_code"),
+            checked_in_at=booking.get("checked_in_at"),
+        )
+        for booking in bookings
+    ]

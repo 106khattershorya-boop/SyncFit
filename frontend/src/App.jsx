@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link, Route, Routes, useLocation, useNavigate } from 'react-router'
 import ActivitiesPage from './pages/ActivitiesPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
@@ -5,7 +6,7 @@ import BookingsPage from './pages/BookingsPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
-import { isLoggedIn, logoutMember } from './services/api.js'
+import { getCurrentUser, isLoggedIn, logoutMember } from './services/api.js'
 import './App.css'
 
 function NotFound() {
@@ -21,6 +22,30 @@ function App() {
   const location = useLocation()
   const navigate = useNavigate()
   const authenticated = isLoggedIn()
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    let active = true
+
+    if (!authenticated) {
+      setIsAdmin(false)
+      return () => {
+        active = false
+      }
+    }
+
+    getCurrentUser()
+      .then((user) => {
+        if (active) setIsAdmin(user.role === 'admin')
+      })
+      .catch(() => {
+        if (active) setIsAdmin(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [authenticated])
 
   function handleLogout() {
     logoutMember()
@@ -59,7 +84,7 @@ function App() {
 
           {authenticated ? (
             <>
-              <Link to="/admin">Admin</Link>
+                  {isAdmin && <Link to="/admin">Admin</Link>}
               <button
                 className="nav-button"
                 type="button"
@@ -76,7 +101,10 @@ function App() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/activities" element={<ActivitiesPage />} />
+        <Route
+        path="/activities"
+        element={<ActivitiesPage isAdmin={isAdmin} />}
+/>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/bookings" element={<BookingsPage />} />

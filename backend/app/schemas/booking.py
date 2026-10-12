@@ -16,3 +16,13 @@ class BookingResponse(BaseModel):
     checkin_code: str | None = None
     booked_at: datetime
     cancelled_at: datetime | None = None
+
+class AdminSessionBookingResponse(BaseModel):
+    id: str
+    member_id: str
+    member_name: str | None = None
+    member_email: str | None = None
+    status: Literal["confirmed", "cancelled"]
+    booked_at: datetime
+    checkin_code: str | None = None
+    checked_in_at: datetime | None = None

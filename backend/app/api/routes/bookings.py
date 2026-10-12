@@ -4,7 +4,7 @@ from bson import ObjectId
 from fastapi import APIRouter, Depends, Path, status
 from pymongo.asynchronous.database import AsyncDatabase
 
-from app.api.dependencies import get_current_user
+from app.api.dependencies import get_current_user, require_member
 from app.db.mongo import get_database
 from app.schemas.booking import BookingCreateRequest, BookingResponse
 from app.services.booking_service import (
@@ -25,7 +25,7 @@ router = APIRouter(prefix="/bookings", tags=["bookings"])
 async def create(
     data: BookingCreateRequest,
     database: AsyncDatabase = Depends(get_database),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_member),
 ) -> BookingResponse:
     return await create_booking(data, current_user["_id"], database)
 
@@ -45,7 +45,7 @@ async def list_mine(
 async def cancel(
     booking_id: str = Path(pattern=r"^[0-9a-fA-F]{24}$"),
     database: AsyncDatabase = Depends(get_database),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_member),
 ) -> BookingResponse:
     return await cancel_booking(
         ObjectId(booking_id),

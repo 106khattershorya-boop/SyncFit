@@ -47,12 +47,19 @@ async function request(path, options = {}) {
   return data
 }
 
-export function getUpcomingSessions(activityType) {
-  const query = activityType
-    ? `?activity_type=${encodeURIComponent(activityType)}`
-    : ''
+export function getUpcomingSessions(activityType, sessionDate) {
+  const params = new URLSearchParams()
 
-  return request(`/sessions${query}`)
+  if (activityType) {
+    params.set('activity_type', activityType)
+  }
+
+  if (sessionDate) {
+    params.set('session_date', sessionDate)
+  }
+
+  const query = params.toString()
+  return request(`/sessions${query ? `?${query}` : ''}`)
 }
 
 export async function loginMember(credentials) {
@@ -116,4 +123,26 @@ export function checkInMember(code) {
     method: 'POST',
     body: JSON.stringify({ code }),
   })
+}
+
+export function getMyWaitlist() {
+  return request('/waitlist')
+}
+
+export function getAdminSessions() {
+  return request('/sessions/admin')
+}
+
+export function getSessionBookings(sessionId) {
+  return request(`/sessions/${encodeURIComponent(sessionId)}/bookings`)
+}
+
+export function leaveWaitlist(sessionId) {
+  return request(`/waitlist/${encodeURIComponent(sessionId)}`, {
+    method: 'DELETE',
+  })
+}
+
+export function getCurrentUser() {
+  return request('/auth/me')
 }
