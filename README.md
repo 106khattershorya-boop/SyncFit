@@ -118,19 +118,19 @@ The frontend runs at http://localhost:5173. Start the backend separately; it run
 
 ## Demo credentials
 
-- Admin email: `<test.admin@example.com>`
-- Admin password: `<GymFit123!>`
-- Member1 email: `<106khatter.shorya@gmail.com>`
-- Member2 email: `<aryanagarwal123@gmail.com>`
-- Member1 password: `<S37ze8KVsa!LTqa>`
-- Member2 password: `<9876543210>`
+- Admin email: `test.admin@example.com`
+- Admin password: `GymFit123!`
+- Member1 email: `test.member1@example.com`
+- Member1 password: `12345678`
+- Member2 email: `test.member2@example.com`
+- Member2 password: `87654321`
 
 ## Assumptions
 
 - New accounts have the `member` role. For this challenge, admin access is assigned manually to a user in MongoDB.
 - Passwords are stored as hashes, not plain text.
 - Session dates and times are stored as timezone-aware datetimes.
-- Sessions start on the hour; the listed activity prices and 20-slot capacity apply to each one-hour session.
+- Sessions start on the hour (Eg : 4:00 pm); the listed activity prices and 20-slot capacity apply to each one-hour session.
 - When a booking is cancelled, the earliest waiting member is promoted if a waitlist entry exists.
 - Only admins can create sessions, view session bookings, and check members in.
 - Only member accounts can create or cancel bookings and join, view, or leave waitlists.
